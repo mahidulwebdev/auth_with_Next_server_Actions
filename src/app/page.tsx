@@ -14,7 +14,6 @@ export default function Home() {
       .get("/user", { withCredentials: true })
       .then((result) => setData(result.data._doc));
   }, []);
-  console.log(user);
 
   return (
     <section className="w-full h-screen flex justify-center items-center bg-gradient-to-br from-gray-800 via-gray-900 to-black">
@@ -26,7 +25,7 @@ export default function Home() {
             className="text-red-500 hover:text-red-600 transition cursor-pointer transform hover:scale-105"
             onClick={() => {
               LogoutAction();
-              router.refresh();
+              router.push("/login");
             }}
           >
             <FiLogOut size={25} />
