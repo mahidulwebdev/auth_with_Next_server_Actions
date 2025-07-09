@@ -2,7 +2,6 @@
 
 A modern authentication system built with **Next.js 15 Server Actions**, offering secure and scalable login, signup, and logout — all without traditional API routes.
 
----
 
 ## ✨ Features
 
@@ -14,7 +13,7 @@ A modern authentication system built with **Next.js 15 Server Actions**, offerin
 - 🛡️ **Security-first**: logic stays on the server
 - 🧩 **Easily extendable** (e.g., 2FA, OPAQUE/SRP, email verification)
 
----
+
 
 ## 🚀 Getting Started
 
