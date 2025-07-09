@@ -23,9 +23,10 @@ export default function Home() {
           <button
             type="button"
             className="text-red-500 hover:text-red-600 transition cursor-pointer transform hover:scale-105"
-            onClick={() => {
-              LogoutAction();
+            onClick={async () => {
+              await LogoutAction();
               router.push("/login");
+              router.refresh();
             }}
           >
             <FiLogOut size={25} />
