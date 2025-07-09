@@ -1,51 +1,59 @@
 "use server";
-import { ConnectDb } from "@/lib/db/dbConnection";
-import UserModel from "@/lib/db/schema/userSchema";
-import { User } from "@/lib/Validation/zod";
 import * as z from "zod/v4";
+import { ConnectDb } from "../../lib/db/dbConnection";
+import { User } from "../../lib/Validation/zod";
+import UserModel from "../../lib/db/schema/userSchema";
 
-interface returnTyp {
+export type SignupState = {
   success: boolean;
-  userName?: string | string[];
-  email?: string | string[];
-  password?: string | string[];
+  userName?: string[];
+  email?: string[] | string;
+  password?: string[];
   signupErr?: string;
   signup?: string;
-}
+};
 
-export async function SignupAction(state: returnTyp, formData: FormData) {
+export async function SignupAction(
+  _state: SignupState,
+  formData: FormData
+): Promise<SignupState> {
   try {
     await ConnectDb();
 
-    // ---> handle validation
     const userData = Object.fromEntries(formData);
     const { error, data } = User.safeParse(userData);
+
     if (error) {
-      const flattened = error ? z.flattenError(error).fieldErrors : {};
+      const flattened = z.flattenError(error).fieldErrors;
 
-      if (flattened?.email) {
-        return { ...flattened, success: false };
-      } else if (flattened?.password) {
-        return { password: flattened.password, success: false };
-      }
-      return { userName: flattened.userName, success: false };
+      return {
+        success: false,
+        userName: flattened.userName,
+        email: flattened.email,
+        password: flattened.password,
+      };
     }
 
-    // --> db operation
-    const findUser = await UserModel.findOne({ email: data?.email });
-    if (findUser) {
-      return { email: "This email is already registered", success: false };
+    const existingUser = await UserModel.findOne({ email: data?.email });
+    if (existingUser) {
+      return {
+        success: false,
+        email: "This email is already registered",
+      };
     }
 
-    const user = new UserModel(data);
-    await user.save();
-    if (!user) {
-      return { signupErr: "An error occurred during signup", success: false };
-    }
+    const newUser = new UserModel(data);
+    await newUser.save();
 
-    return { signup: "Successfully signed up", success: true };
+    return {
+      success: true,
+      signup: "Successfully signed up",
+    };
   } catch (error) {
-    console.log(error);
-    return { signupErr: "Something went wrong", success: false };
+    console.error(error);
+    return {
+      success: false,
+      signupErr: "Something went wrong",
+    };
   }
 }
