@@ -30,7 +30,7 @@ export async function ConnectDb() {
     // --->  If no connection is being made yet (promise is null), create one.
     if (!cached.promise) {
       // ---> bufferCommands: false disables command buffering, useful for avoiding unexpected behavior if the connection drops.
-      const options = { bufferCommands: false, maxPoolSize: 100 };
+      const options = { bufferCommands: false };
       // ---> You initialize the cached.promise with the mongoose.connect().
       cached.promise = mongoose
         .connect(
