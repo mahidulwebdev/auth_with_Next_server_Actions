@@ -27,6 +27,6 @@ export async function GET() {
 
   const findUser = await UserModel.findById({ _id: verify?.id }).select(
     "_id email userName"
-  ).lean();
+  );
   return NextResponse.json({ ...findUser, sucess: true }, { status: 200 });
 }
