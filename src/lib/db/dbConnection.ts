@@ -30,12 +30,24 @@ export async function ConnectDb() {
     // --->  If no connection is being made yet (promise is null), create one.
     if (!cached.promise) {
       // ---> bufferCommands: false disables command buffering, useful for avoiding unexpected behavior if the connection drops.
-      const options = { bufferCommands: false };
+      // const options = {
+      //   bufferCommands: false,
+      //   maxPoolSize: 100,
+      //   readPreference: "secondaryPreferred",
+      //   w: "majority",
+      //   readConcern: { level: "local" }, // FIXED ✅
+      // };
       // ---> You initialize the cached.promise with the mongoose.connect().
       cached.promise = mongoose
         .connect(
           `mongodb+srv://${process.env.DB_USER}:${process.env.DB_KEY}@cluster0.nil1t1y.mongodb.net/${process.env.DB_NAME}`,
-          options
+          {
+            bufferCommands: false,
+            maxPoolSize: 100,
+            readPreference: "secondaryPreferred",
+            w: "majority",
+            readConcern: { level: "local" }, // FIXED ✅
+          }
         )
         .then((result) => {
           //---> Once the connection is successful, it returns the result.connection.
